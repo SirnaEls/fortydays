@@ -1,0 +1,24 @@
+#Xcode
+DerivedData/
+*.xcuserstate
+*.xcworkspace
+xcuserdata/
+
+# macOS
+.DS_Store
+
+# Build
+build/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+
+# Logs
+*.xcactivitylog
+
+# SwiftPM
+.build/
+
+# Playground
+timeline.xctimeline
+playground.xcworkspace
