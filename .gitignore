@@ -1,4 +1,4 @@
-#Xcode
+# Xcode
 DerivedData/
 *.xcuserstate
 *.xcworkspace
@@ -22,3 +22,6 @@ build/
 # Playground
 timeline.xctimeline
 playground.xcworkspace
+
+# Firebase config
+GoogleService-Info.plist
