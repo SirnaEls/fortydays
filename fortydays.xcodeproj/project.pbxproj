@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		94095B5D2DC1491C008DF950 /* Debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 94095B5C2DC1491C008DF950 /* Debug.xcconfig */; };
+		94095B5F2DC1492F008DF950 /* Release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 94095B5E2DC1492F008DF950 /* Release.xcconfig */; };
 		9475AE762DAED43500527733 /* .gitignore in Sources */ = {isa = PBXBuildFile; fileRef = 9475AE752DAED42F00527733 /* .gitignore */; };
+		94A0A5FD2DB147AD007E95C9 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 94A0A5FC2DB147AD007E95C9 /* FirebaseFirestore */; };
 		94F9A7CE2DAF8BFA0038AF9B /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 94F9A7CD2DAF8BFA0038AF9B /* FirebaseAuth */; };
 		94F9A7D02DAF8BFA0038AF9B /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 94F9A7CF2DAF8BFA0038AF9B /* FirebaseCore */; };
 /* End PBXBuildFile section */
@@ -30,6 +33,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		94095B5C2DC1491C008DF950 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		94095B5E2DC1492F008DF950 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		9475AE482DAED1A300527733 /* fortydays.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = fortydays.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9475AE582DAED1A400527733 /* fortydaysTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = fortydaysTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9475AE622DAED1A400527733 /* fortydaysUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = fortydaysUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -61,6 +66,7 @@
 			files = (
 				94F9A7D02DAF8BFA0038AF9B /* FirebaseCore in Frameworks */,
 				94F9A7CE2DAF8BFA0038AF9B /* FirebaseAuth in Frameworks */,
+				94A0A5FD2DB147AD007E95C9 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +90,8 @@
 		9475AE3F2DAED1A300527733 = {
 			isa = PBXGroup;
 			children = (
+				94095B5E2DC1492F008DF950 /* Release.xcconfig */,
+				94095B5C2DC1491C008DF950 /* Debug.xcconfig */,
 				9475AE752DAED42F00527733 /* .gitignore */,
 				9475AE4A2DAED1A300527733 /* fortydays */,
 				9475AE5B2DAED1A400527733 /* fortydaysTests */,
@@ -124,6 +132,7 @@
 			packageProductDependencies = (
 				94F9A7CD2DAF8BFA0038AF9B /* FirebaseAuth */,
 				94F9A7CF2DAF8BFA0038AF9B /* FirebaseCore */,
+				94A0A5FC2DB147AD007E95C9 /* FirebaseFirestore */,
 			);
 			productName = fortydays;
 			productReference = 9475AE482DAED1A300527733 /* fortydays.app */;
@@ -227,6 +236,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94095B5F2DC1492F008DF950 /* Release.xcconfig in Resources */,
+				94095B5D2DC1491C008DF950 /* Debug.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -406,11 +417,14 @@
 		};
 		9475AE6D2DAED1A400527733 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 94095B5C2DC1491C008DF950 /* Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = fortydays/fortydays.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"fortydays/Preview Content\"";
 				DEVELOPMENT_TEAM = 5DZ45L2268;
 				ENABLE_PREVIEWS = YES;
@@ -418,6 +432,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = Launc;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -427,6 +442,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.nassirelabbassi.fortydays;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -435,11 +451,14 @@
 		};
 		9475AE6E2DAED1A400527733 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 94095B5E2DC1492F008DF950 /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = fortydays/fortydays.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"fortydays/Preview Content\"";
 				DEVELOPMENT_TEAM = 5DZ45L2268;
 				ENABLE_PREVIEWS = YES;
@@ -447,6 +466,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = Launc;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -456,6 +476,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.nassirelabbassi.fortydays;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -587,6 +608,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		94A0A5FC2DB147AD007E95C9 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 94F9A7CC2DAF8BFA0038AF9B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
 		94F9A7CD2DAF8BFA0038AF9B /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 94F9A7CC2DAF8BFA0038AF9B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

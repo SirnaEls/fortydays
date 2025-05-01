@@ -11,7 +11,7 @@ struct CircleProgressView: View {
     var body: some View {
         ZStack {
             Circle()
-                .stroke(Color("Primary-100"), lineWidth: 30)
+                .stroke(Color("Primary-250"), lineWidth: 30)
                 .frame(width: 220, height: 220)
             
             Circle()

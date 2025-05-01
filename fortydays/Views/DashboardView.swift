@@ -1,8 +1,9 @@
 import SwiftUI
+import FirebaseAuth
 
 struct DashboardView: View {
-    let userName: String
     @ObservedObject var taskViewModel: TaskViewModel
+    @State private var userName: String = "Utilisateur"
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -16,29 +17,37 @@ struct DashboardView: View {
 
             
             // User greeting
-            HStack(spacing: 12) {
-                Image("userAvatar")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 40, height: 40)
-                    .clipShape(Circle())
-                
-                (
-                    Text("Salam Aleykoum ")
-                        .font(.system(size: 18))
-                        .foregroundColor(.black)
-                    +
-                    Text(userName)
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundColor(Color("Primary-900"))
-                )
+            HStack(spacing: 4) {
+                Text("Salam Aleykoum")
+                    .font(.system(size: 18))
+                    .foregroundColor(Color("Primary-900"))
+                Text(userName)
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(Color("Primary-900"))
             }
             .padding(.leading, 20)
             
             // Days counter circle
-            CircleProgressView(days: 32, maxDays: 40)
+            CircleProgressView(days: taskViewModel.daysUntilNextAction, maxDays: 40)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 20)
+
+            if let nextTask = taskViewModel.tasks.sorted(by: { $0.lastCompletionDate < $1.lastCompletionDate }).first {
+                let daysLeft = nextTask.daysRemainingBeforeDeadline
+                Text(
+                    daysLeft == 0 ?
+                    "🚨 \(nextTask.category.displayName) est à faire aujourd’hui" :
+                    "Prochain rituel à faire : \(nextTask.category.displayName) dans \(daysLeft) jour\(daysLeft > 1 ? "s" : "")"
+                )
+                .font(.subheadline)
+                .foregroundColor(.gray)
+                .padding(.bottom, 10)
+                .frame(maxWidth: .infinity, alignment: .center)
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                    .padding(.bottom, 10)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
             
             // Cards
             List {
@@ -54,7 +63,7 @@ struct DashboardView: View {
                     .padding(.top, 40)
                     .listRowBackground(Color.clear)
                 } else {
-                    ForEach(taskViewModel.tasks) { task in
+                    ForEach(taskViewModel.tasks.sorted(by: { $0.lastCompletionDate > $1.lastCompletionDate })) { task in
                         TaskCard(task: task)
                             .listRowBackground(Color.clear)
                     }
@@ -67,13 +76,19 @@ struct DashboardView: View {
             
             Spacer()
         }
-        .background(Color("Primary-100").opacity(0.4))
+        .background(Color("Primary-100"))
+        .onAppear {
+            if let currentUser = Auth.auth().currentUser {
+                currentUser.reload { _ in
+                    withAnimation {
+                        self.userName = currentUser.displayName ?? "Utilisateur"
+                    }
+                }
+            }
+        }
     }
 }
 
 #Preview {
-    DashboardView(
-        userName: "Nassir",
-        taskViewModel: TaskViewModel()
-    )
+    DashboardView(taskViewModel: TaskViewModel())
 }

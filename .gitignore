@@ -24,4 +24,5 @@ timeline.xctimeline
 playground.xcworkspace
 
 # Firebase config
-GoogleService-Info.plist
+GoogleService-Info_dev.plist
+GoogleService-Info_prod.plist

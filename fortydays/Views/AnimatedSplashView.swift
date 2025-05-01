@@ -8,8 +8,31 @@
 import SwiftUI
 
 struct AnimatedSplashView: View {
+    @State private var logoVisible = false
+    @State private var shouldNavigate = false
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            Color("Primary-100").ignoresSafeArea()
+
+            Image("Logo40Days")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 160, height: 160)
+                .opacity(logoVisible ? 1 : 0)
+                .animation(.easeIn(duration: 1), value: logoVisible)
+        }
+        .onAppear {
+            logoVisible = true
+
+            // Après 2 sec, on passe à la vraie vue (ex: RootView)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                shouldNavigate = true
+            }
+        }
+        .fullScreenCover(isPresented: $shouldNavigate) {
+            RootView()
+        }
     }
 }
 

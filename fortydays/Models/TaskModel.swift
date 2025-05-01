@@ -1,6 +1,5 @@
 import Foundation
 
-
 enum TaskCategory: String, CaseIterable, Identifiable, Codable {
     case moustache = "Moustache"
     case aisselles = "Aisselles"
@@ -8,6 +7,15 @@ enum TaskCategory: String, CaseIterable, Identifiable, Codable {
     case ongles = "Ongles"
 
     var id: String { rawValue }
+    
+    var displayName: String {
+        switch self {
+        case .moustache: return "Moustache"
+        case .aisselles: return "Aisselles"
+        case .pubis: return "Pubis"
+        case .ongles: return "Ongles"
+        }
+    }
 }
 
 struct TaskModel: Identifiable, Codable {
@@ -15,12 +23,16 @@ struct TaskModel: Identifiable, Codable {
     let category: TaskCategory
     let lastCompletionDate: Date
 
-    var daysSince: Int {
+    var daysSinceLastCompletion: Int {
         DateHelper.daysBetween(start: lastCompletionDate, end: Date())
     }
 
-    var daysLeft: Int {
-        DateHelper.daysRemainingUntil40(since: lastCompletionDate)
+    var daysRemainingBeforeDeadline: Int {
+        max(0, 40 - daysSinceLastCompletion)
+    }
+
+    var nextDueDate: Date {
+        Calendar.current.date(byAdding: .day, value: 40, to: lastCompletionDate) ?? Date()
     }
 
     init(id: UUID = UUID(), category: TaskCategory, lastCompletionDate: Date) {

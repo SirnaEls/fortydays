@@ -6,13 +6,22 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct RootView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+    @StateObject private var taskViewModel = TaskViewModel()
+    @StateObject private var sessionManager = SessionManager()
 
-#Preview {
-    RootView()
+    var body: some View {
+        Group {
+            if sessionManager.isLoggedIn {
+                ContentView(taskViewModel: taskViewModel)
+                    .onAppear {
+                        taskViewModel.loadTasksFromFirebase()
+                    }
+            } else {
+                LoginView()
+            }
+        }
+    }
 }

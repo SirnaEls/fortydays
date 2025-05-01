@@ -16,12 +16,13 @@ struct LoginView: View {
     @State private var errorMessage: String?
     @State private var isLoggedIn = false
     @State private var currentNonce: String?
+    @State private var isLoading = false
+    @EnvironmentObject var sessionManager: SessionManager
 
     var body: some View {
         NavigationView {
             ZStack {
                 Color("Primary-100")
-                    .opacity(0.4)
                     .ignoresSafeArea()
 
                 VStack(spacing: 20) {
@@ -32,6 +33,7 @@ struct LoginView: View {
                             .padding(.top, 16)
 
                         Spacer()
+                    
 
                     VStack(spacing: 8) {
                         
@@ -47,7 +49,7 @@ struct LoginView: View {
                     .padding(.bottom, 30)
 
                     VStack(alignment: .leading, spacing: 24) {
-                        Text("Sign In")
+                        Text("Connexion")
                             .font(.title2)
                             .bold()
                             .foregroundColor(Color("Primary-900"))
@@ -56,13 +58,15 @@ struct LoginView: View {
                             .keyboardType(.emailAddress)
                             .autocapitalization(.none)
                             .padding()
-                            .background(Color("Primary-100"))
+                            .background(Color("Primary-250"))
                             .cornerRadius(8)
+                            .accessibilityLabel("Adresse email")
 
                         SecureField("Mot de passe", text: $password)
                             .padding()
-                            .background(Color("Primary-100"))
+                            .background(Color("Primary-250"))
                             .cornerRadius(8)
+                            .accessibilityLabel("Mot de passe")
 
                         if let error = errorMessage {
                             Text(error)
@@ -74,56 +78,90 @@ struct LoginView: View {
                             Text("Se connecter")
                                 .frame(maxWidth: .infinity)
                                 .padding()
-                                .background(Color("Primary-500"))
+                                .background((email.isEmpty || password.isEmpty) ? Color.gray.opacity(0.5) : Color("Primary-500"))
                                 .foregroundColor(.white)
                                 .cornerRadius(8)
                         }
+                        .disabled(email.isEmpty || password.isEmpty)
                         
-                        SignInWithAppleButton(
-                            onRequest: { request in
-                                let nonce = randomNonceString()
-                                currentNonce = nonce
-                                request.requestedScopes = [.fullName, .email]
-                                request.nonce = sha256(nonce)
-                            },
-                            onCompletion: { result in
-                                switch result {
-                                case .success(let authResults):
-                                    guard let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential,
-                                          let identityToken = appleIDCredential.identityToken,
-                                          let tokenString = String(data: identityToken, encoding: .utf8) else {
-                                        print("Unable to fetch identity token")
-                                        return
-                                    }
-
-                                    guard let nonce = currentNonce else {
-                                        print("Invalid state: A login callback was received, but no login request was sent.")
-                                        return
-                                    }
-
-                                    let credential = OAuthProvider.credential(
-                                        providerID: .apple,
-                                        idToken: tokenString,
-                                        rawNonce: nonce
-                                    )
-
-                                    Auth.auth().signIn(with: credential) { authResult, error in
-                                        if let error = error {
-                                            print("Firebase sign in with Apple failed: \(error.localizedDescription)")
-                                        } else {
-                                            print("Firebase sign in with Apple successful: \(authResult?.user.uid ?? "")")
-                                            isLoggedIn = true
+                        if isLoading {
+                            ProgressView("Connexion en cours...")
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                        } else {
+                            SignInWithAppleButton(
+                                onRequest: { request in
+                                    let nonce = randomNonceString()
+                                    currentNonce = nonce
+                                    request.requestedScopes = [.fullName, .email]
+                                    request.nonce = sha256(nonce)
+                                },
+                                onCompletion: { result in
+                                    switch result {
+                                    case .success(let authResults):
+                                        guard let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential,
+                                              let identityToken = appleIDCredential.identityToken,
+                                              let tokenString = String(data: identityToken, encoding: .utf8) else {
+                                            print("Unable to fetch identity token")
+                                            return
                                         }
-                                    }
 
-                                case .failure(let error):
-                                    print("Apple sign-in failed: \(error.localizedDescription)")
+                                        guard let nonce = currentNonce else {
+                                            print("Invalid state: A login callback was received, but no login request was sent.")
+                                            return
+                                        }
+
+                                        let credential = OAuthProvider.credential(
+                                            providerID: .apple,
+                                            idToken: tokenString,
+                                            rawNonce: nonce
+                                        )
+
+                                        isLoading = true
+                                        Auth.auth().signIn(with: credential) { authResult, error in
+                                            isLoading = false
+                                            if let error = error {
+                                                print("Firebase sign in with Apple failed: \(error.localizedDescription)")
+                                            } else if let user = authResult?.user {
+                                                print("Firebase sign in with Apple successful: \(user.uid)")
+
+                                                print("🧪 Apple full name received:", appleIDCredential.fullName ?? "nil")
+
+                                                if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
+                                                    let fullName = appleIDCredential.fullName
+                                                    let firstName = fullName?.givenName ?? ""
+                                                    if !firstName.isEmpty {
+                                                        let changeRequest = user.createProfileChangeRequest()
+                                                        changeRequest.displayName = firstName
+                                                        changeRequest.commitChanges { commitError in
+                                                            if let commitError = commitError {
+                                                                print("Failed to update display name: \(commitError.localizedDescription)")
+                                                            } else {
+                                                                print("Display name updated successfully")
+                                                                user.reload { reloadError in
+                                                                    if let reloadError = reloadError {
+                                                                        print("Failed to reload user: \(reloadError.localizedDescription)")
+                                                                    } else {
+                                                                        print("User reloaded successfully.")
+                                                                        sessionManager.isLoggedIn = true
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                    case .failure(let error):
+                                        print("Apple sign-in failed: \(error.localizedDescription)")
+                                    }
                                 }
-                            }
-                        )
-                        .frame(height: 45)
-                        .signInWithAppleButtonStyle(.black)
-                        .cornerRadius(8)
+                            )
+                            .frame(height: 45)
+                            .signInWithAppleButtonStyle(.black)
+                            .cornerRadius(8)
+                        }
 
                         HStack {
                             Text("Pas encore de compte ?")
@@ -146,7 +184,19 @@ struct LoginView: View {
     }
 
     func login() {
-        // Placeholder for Firebase login logic
+        guard !email.isEmpty, !password.isEmpty else {
+            self.errorMessage = "Veuillez remplir tous les champs."
+            return
+        }
+
+        Auth.auth().signIn(withEmail: email, password: password) { result, error in
+            if let error = error {
+                self.errorMessage = "Erreur : \(error.localizedDescription)"
+                print("❌ Erreur connexion :", error.localizedDescription)
+            } else {
+                print("✅ Connexion réussie")
+            }
+        }
     }
     
     func randomNonceString(length: Int = 32) -> String {

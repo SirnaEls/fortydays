@@ -1,16 +1,15 @@
+import FirebaseAuth
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var taskViewModel = TaskViewModel()
+    @ObservedObject var taskViewModel: TaskViewModel
     @State private var selectedTab = 0
     @State private var isPresentingNewTask = false
-    
-    let userName = "Nassir"
     
     var body: some View {
         ZStack {
             TabView(selection: $selectedTab) {
-                DashboardView(userName: userName, taskViewModel: taskViewModel)
+                DashboardView(taskViewModel: taskViewModel)
                     .tabItem {
                         Image(systemName: "rectangle.grid.2x2")
                         Text("Dashboard")
@@ -60,6 +59,5 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
-    }
+        ContentView(taskViewModel: TaskViewModel())    }
 }

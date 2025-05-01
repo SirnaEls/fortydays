@@ -10,14 +10,14 @@ struct TaskCard: View {
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(Color("Primary-900"))
                 
-                Text("Dernière fois il y a \(task.daysSince) jours")
+                Text("Dernière fois il y a \(task.daysSinceLastCompletion) jours")
                     .font(.system(size: 14))
-                    .foregroundColor(.gray)
+                    .foregroundColor(Color("Primary-900"))
             }
             
             Spacer()
             
-            Text("J-\(task.daysLeft)")
+            Text("J-\(task.daysRemainingBeforeDeadline)")
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundColor(Color("Primary-100"))
                 .padding(.horizontal, 12)
@@ -26,7 +26,7 @@ struct TaskCard: View {
                 .cornerRadius(20)
         }
         .padding(15)
-        .background(Color("Primary-100"))
+        .background(Color("Primary-250"))
         .cornerRadius(15)
     }
 }
